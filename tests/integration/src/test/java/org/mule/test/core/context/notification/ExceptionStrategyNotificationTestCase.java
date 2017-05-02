@@ -8,11 +8,11 @@ package org.mule.test.core.context.notification;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertNotNull;
-import static org.mule.runtime.core.context.notification.ExceptionStrategyNotification.PROCESS_END;
-import static org.mule.runtime.core.context.notification.ExceptionStrategyNotification.PROCESS_START;
+import static org.mule.runtime.core.context.notification.ErrorHandlerNotification.PROCESS_END;
+import static org.mule.runtime.core.context.notification.ErrorHandlerNotification.PROCESS_START;
 
 import org.mule.runtime.core.component.ComponentException;
-import org.mule.runtime.core.context.notification.ExceptionStrategyNotification;
+import org.mule.runtime.core.context.notification.ErrorHandlerNotification;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class ExceptionStrategyNotificationTestCase extends AbstractNotificationT
   }
 
   private RestrictedNode node(int action) {
-    return new Node(ExceptionStrategyNotification.class, action);
+    return new Node(ErrorHandlerNotification.class, action);
   }
 
   @Override

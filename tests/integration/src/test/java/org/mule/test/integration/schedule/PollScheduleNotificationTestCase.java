@@ -7,6 +7,9 @@
 package org.mule.test.integration.schedule;
 
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
 import org.mule.runtime.core.api.context.notification.ConnectorMessageNotificationListener;
 import org.mule.runtime.core.context.notification.ConnectorMessageNotification;
 import org.mule.tck.probe.PollingProber;
@@ -36,8 +39,7 @@ public class PollScheduleNotificationTestCase extends AbstractIntegrationTestCas
 
       @Override
       public boolean isSatisfied() {
-        return listener.getNotifications().size() > 1
-            && "pollfoo/scheduler".equals(listener.getNotifications().get(0).getEndpoint());
+        return listener.getNotifications().size() > 0;
       }
 
       @Override
@@ -45,6 +47,8 @@ public class PollScheduleNotificationTestCase extends AbstractIntegrationTestCas
         return "The notification was never sent";
       }
     });
+
+    assertThat(listener.getNotifications().get(0).getLocationUri(), equalTo("pollfoo/scheduler"));
 
   }
 

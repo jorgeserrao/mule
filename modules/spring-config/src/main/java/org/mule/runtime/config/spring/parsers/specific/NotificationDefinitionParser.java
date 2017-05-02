@@ -31,7 +31,7 @@ import org.mule.runtime.core.context.notification.ConnectionNotification;
 import org.mule.runtime.core.context.notification.ConnectorMessageNotification;
 import org.mule.runtime.core.context.notification.CustomNotification;
 import org.mule.runtime.core.context.notification.ExceptionNotification;
-import org.mule.runtime.core.context.notification.ExceptionStrategyNotification;
+import org.mule.runtime.core.context.notification.ErrorHandlerNotification;
 import org.mule.runtime.core.context.notification.ManagementNotification;
 import org.mule.runtime.core.context.notification.MessageProcessorNotification;
 import org.mule.runtime.core.context.notification.MuleContextNotification;
@@ -72,7 +72,7 @@ public class NotificationDefinitionParser extends ChildMapEntryDefinitionParser 
     EVENT_MAP.put("COMPONENT-MESSAGE", ComponentMessageNotification.class.getName());
     EVENT_MAP.put("MANAGEMENT", ManagementNotification.class.getName());
     EVENT_MAP.put("MESSAGE-PROCESSOR", MessageProcessorNotification.class.getName());
-    EVENT_MAP.put("EXCEPTION-STRATEGY", ExceptionStrategyNotification.class.getName());
+    EVENT_MAP.put("EXCEPTION-STRATEGY", ErrorHandlerNotification.class.getName());
     EVENT_MAP.put("CONNECTION", ConnectionNotification.class.getName());
     EVENT_MAP.put("REGISTRY", RegistryNotification.class.getName());
     EVENT_MAP.put("CUSTOM", CustomNotification.class.getName());

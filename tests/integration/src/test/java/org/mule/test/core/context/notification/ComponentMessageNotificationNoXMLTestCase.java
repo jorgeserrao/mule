@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mule.runtime.api.message.Message.of;
 import static org.mule.runtime.core.api.construct.Flow.builder;
 
-import org.mule.runtime.api.message.Message;
 import org.mule.runtime.core.DefaultEventContext;
 import org.mule.runtime.core.api.Event;
 import org.mule.runtime.core.api.component.Component;
@@ -111,8 +110,8 @@ public class ComponentMessageNotificationNoXMLTestCase extends AbstractMuleConte
     public void onNotification(ServerNotification notification) {
       this.notification = notification;
       assertEquals(ComponentMessageNotification.class, notification.getClass());
-      assertTrue(notification.getSource() instanceof Message);
-      assertNotNull(((ComponentMessageNotification) notification).getServiceName());
+      assertTrue(((ComponentMessageNotification) notification).getMessage() != null);
+      assertNotNull(notification.getResourceIdentifier());
 
       if (notification.getAction() == ComponentMessageNotification.COMPONENT_PRE_INVOKE) {
         before = true;

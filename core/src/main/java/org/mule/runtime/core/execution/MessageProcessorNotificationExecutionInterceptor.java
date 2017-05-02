@@ -11,14 +11,12 @@ import static org.mule.runtime.core.api.Event.setCurrentEvent;
 import static org.mule.runtime.core.context.notification.MessageProcessorNotification.MESSAGE_PROCESSOR_POST_INVOKE;
 import static org.mule.runtime.core.context.notification.MessageProcessorNotification.MESSAGE_PROCESSOR_PRE_INVOKE;
 
-import org.mule.runtime.api.meta.AnnotatedObject;
-import org.mule.runtime.core.exception.MessagingException;
-import org.mule.runtime.core.api.MuleContext;
-import org.mule.runtime.core.api.Event;
 import org.mule.runtime.api.exception.MuleException;
+import org.mule.runtime.api.meta.AnnotatedObject;
 import org.mule.runtime.core.api.Event;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.construct.FlowConstruct;
+import org.mule.runtime.core.api.context.notification.EnrichedNotificationInfo;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.context.notification.MessageProcessorNotification;
 import org.mule.runtime.core.context.notification.ServerNotificationManager;
@@ -85,7 +83,8 @@ class MessageProcessorNotificationExecutionInterceptor implements MessageProcess
         && serverNotificationManager.isNotificationEnabled(MessageProcessorNotification.class)) {
       if ((processor instanceof AnnotatedObject) && ((AnnotatedObject) processor).getAnnotation(LOCATION_KEY) != null) {
         serverNotificationManager
-            .fireNotification(new MessageProcessorNotification(flowConstruct, event, processor, exceptionThrown, action));
+            .fireNotification(new MessageProcessorNotification(EnrichedNotificationInfo.create(event, null, processor),
+                                                               flowConstruct, exceptionThrown, action));
       }
     }
   }

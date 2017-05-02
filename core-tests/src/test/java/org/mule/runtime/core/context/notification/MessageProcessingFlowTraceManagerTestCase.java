@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 import static org.mule.runtime.core.DefaultEventContext.create;
 import static org.mule.runtime.core.context.notification.MessageProcessingFlowTraceManager.FLOW_STACK_INFO_KEY;
+
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.meta.AnnotatedObject;
 import org.mule.runtime.core.api.Event;
@@ -338,9 +339,12 @@ public class MessageProcessingFlowTraceManagerTestCase extends AbstractMuleTestC
                                                                     String processorPath) {
     MessageProcessorNotification processorNotification = mock(MessageProcessorNotification.class);
     when(processorNotification.getProcessor()).thenReturn(processor);
+    AnnotatedObject component = mock(AnnotatedObject.class);
     ComponentLocation componentLocation = mock(ComponentLocation.class);
+    when(component.getLocation()).thenReturn(componentLocation);
     when(componentLocation.getLocation()).thenReturn(processorPath);
-    when(processorNotification.getComponentLocation()).thenReturn(componentLocation);
+    when(processorNotification.getComponent()).thenReturn(component);
+    when(processorNotification.getComponent().getLocation()).thenReturn(componentLocation);
     when(processorNotification.getSource()).thenReturn(event);
     return processorNotification;
   }

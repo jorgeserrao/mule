@@ -33,6 +33,7 @@ import org.mule.runtime.core.api.EventContext;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.construct.FlowConstruct;
 import org.mule.runtime.core.api.construct.Pipeline;
+import org.mule.runtime.core.api.context.notification.EnrichedNotificationInfo;
 import org.mule.runtime.core.api.exception.MessagingExceptionHandler;
 import org.mule.runtime.core.api.exception.MessagingExceptionHandlerAware;
 import org.mule.runtime.core.api.processor.MessageProcessorChain;
@@ -276,7 +277,8 @@ public abstract class AbstractMessageProcessorChain extends AbstractAnnotatedObj
       if (processor instanceof AnnotatedObject
           && ((AnnotatedObject) processor).getLocation() != null) {
         serverNotificationManager
-            .fireNotification(new MessageProcessorNotification(flowConstruct, event, processor, exceptionThrown, action));
+            .fireNotification(new MessageProcessorNotification(EnrichedNotificationInfo.create(event, exceptionThrown, processor),
+                                                               flowConstruct, exceptionThrown, action));
       }
     }
   }

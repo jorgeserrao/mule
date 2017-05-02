@@ -6,6 +6,7 @@
  */
 package org.mule.test.module.http.functional.listener;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mule.runtime.core.api.context.notification.ServerNotification.getActionName;
 import static org.mule.runtime.core.context.notification.ConnectorMessageNotification.MESSAGE_RECEIVED;
 import static org.mule.runtime.core.context.notification.ConnectorMessageNotification.MESSAGE_RESPONSE;
@@ -51,11 +52,12 @@ public class HttpListenerNotificationsTestCase extends AbstractHttpTestCase {
   @Test
   public void receiveNotification() throws Exception {
     String listenerUrl = String.format("http://localhost:%s/%s", listenPort.getNumber(), path.getValue());
+    final String expectedComponentUri = "testFlow1/http:listener";
 
     CountDownLatch latch = new CountDownLatch(2);
     // for now use none since we have no way of sending the endpoint
     TestConnectorMessageNotificationListener listener =
-        new TestConnectorMessageNotificationListener(latch, "testFlow1/http:listener");
+        new TestConnectorMessageNotificationListener(latch);
     muleContext.getNotificationManager().addListener(listener);
 
     Request.Post(listenerUrl).execute();
@@ -63,6 +65,8 @@ public class HttpListenerNotificationsTestCase extends AbstractHttpTestCase {
     latch.await(1000, TimeUnit.MILLISECONDS);
 
     assertThat(listener.getNotificationActionNames(), contains(getActionName(MESSAGE_RECEIVED), getActionName(MESSAGE_RESPONSE)));
+    assertThat(listener.getNotifications(getActionName(MESSAGE_RECEIVED)).get(0).getLocationUri(), equalTo(expectedComponentUri));
+    assertThat(listener.getNotifications(getActionName(MESSAGE_RESPONSE)).get(0).getLocationUri(), equalTo(expectedComponentUri));
   }
 
 }

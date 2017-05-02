@@ -8,8 +8,6 @@ package org.mule.test.module.http.functional;
 
 import static org.apache.commons.collections.CollectionUtils.collect;
 import static org.apache.commons.collections.CollectionUtils.select;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import org.mule.runtime.core.api.context.notification.ConnectorMessageNotificationListener;
 import org.mule.runtime.core.api.context.notification.ServerNotification;
@@ -28,19 +26,15 @@ import org.apache.commons.collections.Transformer;
 public class TestConnectorMessageNotificationListener implements ServerNotificationListener<ConnectorMessageNotification> {
 
   private final CountDownLatch latch;
-  private final String expectedExchangePoint;
 
   private List<ConnectorMessageNotification> notifications = new ArrayList<>();
 
   public TestConnectorMessageNotificationListener() {
-    // Dummy listener for registration
     latch = null;
-    expectedExchangePoint = null;
   }
 
-  public TestConnectorMessageNotificationListener(CountDownLatch latch, String expectedExchangePoint) {
+  public TestConnectorMessageNotificationListener(CountDownLatch latch) {
     this.latch = latch;
-    this.expectedExchangePoint = expectedExchangePoint;
   }
 
   @Override
@@ -52,7 +46,6 @@ public class TestConnectorMessageNotificationListener implements ServerNotificat
   public void onNotification(ConnectorMessageNotification notification) {
     notifications.add(notification);
     if (latch != null) {
-      assertThat(notification.getEndpoint(), is(expectedExchangePoint));
       latch.countDown();
     }
   }

@@ -33,7 +33,7 @@ import org.mule.runtime.core.api.processor.MessageProcessorChainBuilder;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.config.DefaultMuleConfiguration;
 import org.mule.runtime.core.context.notification.AsyncMessageNotification;
-import org.mule.runtime.core.context.notification.ExceptionStrategyNotification;
+import org.mule.runtime.core.context.notification.ErrorHandlerNotification;
 import org.mule.runtime.core.context.notification.PipelineMessageNotification;
 import org.mule.runtime.core.context.notification.ServerNotificationManager;
 import org.mule.runtime.core.exception.ErrorHandlerFactory;
@@ -148,10 +148,10 @@ public class PipelineMessageNotificationTestCase extends AbstractReactiveProcess
     verify(notificationManager, times(1))
         .fireNotification(argThat(new PipelineMessageNotificiationArgumentMatcher(PROCESS_COMPLETE, true, null)));
     verify(notificationManager, times(1))
-        .fireNotification(argThat(new PipelineMessageNotificiationArgumentMatcher(ExceptionStrategyNotification.PROCESS_START,
+        .fireNotification(argThat(new PipelineMessageNotificiationArgumentMatcher(ErrorHandlerNotification.PROCESS_START,
                                                                                   false, null)));
     verify(notificationManager, times(1))
-        .fireNotification(argThat(new PipelineMessageNotificiationArgumentMatcher(ExceptionStrategyNotification.PROCESS_END,
+        .fireNotification(argThat(new PipelineMessageNotificiationArgumentMatcher(ErrorHandlerNotification.PROCESS_END,
                                                                                   false, null)));
     verify(notificationManager, times(4)).fireNotification(any(PipelineMessageNotification.class));
   }

@@ -6,6 +6,9 @@
  */
 package org.mule.test.module.http.functional.requester;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mule.runtime.core.api.context.notification.ServerNotification.getActionName;
 import static org.mule.runtime.core.context.notification.ConnectorMessageNotification.MESSAGE_REQUEST_BEGIN;
 import static org.mule.runtime.core.context.notification.ConnectorMessageNotification.MESSAGE_REQUEST_END;
@@ -14,9 +17,6 @@ import static org.mule.test.allure.AllureConstants.HttpFeature.HTTP_EXTENSION;
 import static org.mule.test.module.http.functional.TestConnectorMessageNotificationListener.register;
 import static org.mule.test.module.http.functional.matcher.HttpMessageAttributesMatchers.hasReasonPhrase;
 import static org.mule.test.module.http.functional.matcher.HttpMessageAttributesMatchers.hasStatusCode;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 import org.mule.extension.http.api.HttpResponseAttributes;
 import org.mule.runtime.api.message.Message;
@@ -49,9 +49,10 @@ public class HttpRequestNotificationsTestCase extends AbstractHttpRequestTestCas
 
   @Test
   public void receiveNotification() throws Exception {
+    final String expectedComponentUri = "http://localhost:" + httpPort.getValue() + "/basePath/requestPath";
     CountDownLatch latch = new CountDownLatch(2);
     TestConnectorMessageNotificationListener listener =
-        new TestConnectorMessageNotificationListener(latch, "http://localhost:" + httpPort.getValue() + "/basePath/requestPath");
+        new TestConnectorMessageNotificationListener(latch);
     muleContext.getNotificationManager().addListener(listener);
 
     Message response = flowRunner("requestFlow").withPayload(TEST_MESSAGE).run().getMessage();
@@ -60,14 +61,19 @@ public class HttpRequestNotificationsTestCase extends AbstractHttpRequestTestCas
 
     assertThat(listener.getNotificationActionNames(),
                contains(getActionName(MESSAGE_REQUEST_BEGIN), getActionName(MESSAGE_REQUEST_END)));
+    assertThat(listener.getNotifications(getActionName(MESSAGE_REQUEST_BEGIN)).get(0).getLocationUri(),
+               equalTo(expectedComponentUri));
+    assertThat(listener.getNotifications(getActionName(MESSAGE_REQUEST_END)).get(0).getLocationUri(),
+               equalTo(expectedComponentUri));
+
 
     // End event should have appended http.status and http.reason as inbound properties
-    Message message = listener.getNotifications(getActionName(MESSAGE_REQUEST_END)).get(0).getSource();
+    Message message = listener.getNotifications(getActionName(MESSAGE_REQUEST_END)).get(0).getMessage();
     // For now, check the response, since we no longer have control over the MuleEvent generated, only the Message
     assertThat((HttpResponseAttributes) response.getAttributes().getValue(), hasStatusCode(OK.getStatusCode()));
     assertThat((HttpResponseAttributes) response.getAttributes().getValue(), hasReasonPhrase(OK.getReasonPhrase()));
 
-    Message requestMessage = listener.getNotifications(getActionName(MESSAGE_REQUEST_BEGIN)).get(0).getSource();
+    Message requestMessage = listener.getNotifications(getActionName(MESSAGE_REQUEST_BEGIN)).get(0).getMessage();
     assertThat(requestMessage, equalTo(message));
   }
 

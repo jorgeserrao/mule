@@ -6,14 +6,17 @@
  */
 package org.mule.runtime.core.context.notification;
 
+import org.mule.runtime.core.api.construct.FlowConstruct;
+import org.mule.runtime.core.api.context.notification.EnrichedNotificationInfo;
+import org.mule.runtime.core.api.context.notification.EnrichedServerNotification;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.mule.runtime.core.api.context.notification.ServerNotification;
 
 /**
  * This class is from Mule 2.2.5. It is modified so the ExceptionNotification has a resourceId of the exception type. This is only
  * here so we can avoid doing a hot fix of Mule to run MMC. This will be removed in future releases of MMC.
  */
-public class ExceptionNotification extends ServerNotification {
+public class ExceptionNotification extends EnrichedServerNotification {
 
   /**
    * Serial version.
@@ -27,8 +30,8 @@ public class ExceptionNotification extends ServerNotification {
 
   private Throwable exception;
 
-  public ExceptionNotification(Throwable exception) {
-    super(exception, EXCEPTION_ACTION, getExceptionCause(exception));
+  public ExceptionNotification(Throwable exception, EnrichedNotificationInfo notificationInfo, FlowConstruct flowConstruct) {
+    super(notificationInfo, EXCEPTION_ACTION, flowConstruct);
     this.exception = exception;
   }
 
